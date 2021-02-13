@@ -20,7 +20,7 @@ export class MockDependenciesProvider implements vscode.CodeActionProvider {
 
     const dependencies = await getConstructorDependencies(fileUri, constructorName);
 
-    await this.mockDependencies(dependencies, document, range, codeAction.edit);
+    await this.mockDependencies(dependencies, document, range.start.line + 1, codeAction.edit);
     await vscode.commands.executeCommand('editor.action.formatDocument');
 
     return [
@@ -28,9 +28,9 @@ export class MockDependenciesProvider implements vscode.CodeActionProvider {
     ];
   }
 
-  private async mockDependencies(dependencies: string[], document: vscode.TextDocument, range: vscode.Range | vscode.Selection, edit: vscode.WorkspaceEdit) {
+  private async mockDependencies(dependencies: string[], document: vscode.TextDocument, startLine: number, edit: vscode.WorkspaceEdit) {
     dependencies.forEach(dependency => {
-      edit.insert(document.uri, new vscode.Position(range.start.line + 1, 0), this.getMock(dependency))
+      edit.insert(document.uri, new vscode.Position(startLine, 0), this.getMock(dependency))
     });
   }
 
