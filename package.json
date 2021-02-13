@@ -1,11 +1,18 @@
 {
   "name": "csharper",
   "displayName": "csharper",
-  "description": "",
+  "description": "Helps mocking dependencies for a class",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.53.0"
   },
+  "keywords": [
+    "c#",
+    "mock",
+    "csharper",
+    "mock dependencies",
+    "mocking"
+  ],
   "categories": [
     "Other"
   ],
