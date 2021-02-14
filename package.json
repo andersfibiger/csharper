@@ -21,7 +21,35 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": []
+    "commands": [],
+    "languages": [
+      {
+        "id": "csharp",
+        "aliases": [
+          "csharp",
+          "c#"
+        ],
+        "extensions": [
+          ".cs"
+        ],
+        "filenamePatterns": [
+          "*Test",
+          "*Tests"
+        ]
+      }
+    ],
+    "configuration":[
+      {
+        "title": "csharper configuration",
+        "properties": {
+          "csharper.restartOmnisharpAfterMocking": {
+            "type": "boolean",
+            "default": true,
+            "description": "if true omnisharp will restart after mocking"
+          }
+        }
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
