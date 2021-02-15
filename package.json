@@ -1,11 +1,22 @@
 {
   "name": "csharper",
-  "displayName": "csharper",
-  "description": "",
+  "displayName": "csharper mocking",
+  "description": "Helps mocking dependencies for a class",
   "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/andersfibiger/csharper"
+  },
+  "icon": "csharp-icon.png",
   "engines": {
     "vscode": "^1.53.0"
   },
+  "keywords": [
+    "c#",
+    "mock",
+    "csharper",
+    "mock dependencies",
+    "mocking"
+  ],
   "categories": [
     "Other"
   ],
@@ -14,7 +25,35 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": []
+    "commands": [],
+    "languages": [
+      {
+        "id": "csharp",
+        "aliases": [
+          "csharp",
+          "c#"
+        ],
+        "extensions": [
+          ".cs"
+        ],
+        "filenamePatterns": [
+          "*Test",
+          "*Tests"
+        ]
+      }
+    ],
+    "configuration":[
+      {
+        "title": "csharper configuration",
+        "properties": {
+          "csharper.restartOmnisharpAfterMocking": {
+            "type": "boolean",
+            "default": true,
+            "description": "if true omnisharp will restart after mocking"
+          }
+        }
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

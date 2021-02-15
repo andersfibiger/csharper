@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { UnitUnderTest } from './models/UnitUnderTest';
 
 export const getConstructorDependencies = async (uri: vscode.Uri, constructorName: string): Promise<string[]> => {
   const fileContent = (await vscode.workspace.openTextDocument(uri)).getText()
@@ -17,23 +18,40 @@ export const getConstructorDependencies = async (uri: vscode.Uri, constructorNam
   return dependencies;
 }
 
-export const getConstructorName = (document: vscode.TextDocument, range: vscode.Range | vscode.Selection): string => {
-  const lineText = document.getText(new vscode.Range(range.start.line, 0, range.start.line, range.start.character));
+export const getUnitUnderTest = (document: vscode.TextDocument, range: vscode.Range | vscode.Selection): UnitUnderTest | undefined => {
+  if (document.fileName.indexOf('Test') === -1) {
+    return;
+  }
 
-  let name = lineText.split(' ').splice(-2)[0];
+  const line = document.lineAt(range.start.line);
+  if (line.isEmptyOrWhitespace) {
+    return;
+  }
 
-  if (name.startsWith('I'))
-    name = name.substr(1, name.length);
+  let uut = line.text.split(' ').splice(-2);
+  let type = uut[0];
 
-  return name;
+  if (type.startsWith('I'))
+    type = type.substr(1, type.length);
+
+  return {
+    type: type,
+    name: uut[1].slice(0, -1)
+  };
 }
 
-export const getFileUriFromConstructor = async (constructorName: string): Promise<vscode.Uri | undefined> => {
+export const getCurrentFileConstructor = (document: vscode.TextDocument) => {
+  const text = document.getText();
+  const classNameStartIndex = text.indexOf('class') + 6;
+  return text.substr(classNameStartIndex).split(' ')[0].trimEnd();
+}
+
+export const getFileUriFromType = async (constructorName: string): Promise<vscode.Uri | undefined> => {
   const files = await vscode.workspace.findFiles(new vscode.RelativePattern(vscode.workspace.workspaceFolders![0], `**/${constructorName}.cs`));
 
   if (files.length === 0)
     return;
-  
+
   let chosenFile: vscode.Uri;
   if (files.length > 1) {
     const fileNames = files.map(formatFileNames);
@@ -49,6 +67,15 @@ export const getFileUriFromConstructor = async (constructorName: string): Promis
   }
 
   return chosenFile;
+}
+
+export const getIndentation = () => {
+  const tabSize = vscode.window.activeTextEditor?.options.tabSize;
+  if (!tabSize || typeof (tabSize) === 'string') {
+    return Array(5).join(' ');
+  }
+
+  return Array((tabSize * 2) + 1).join(' ');
 }
 
 const formatFileNames = (fileUri: vscode.Uri): string => {
