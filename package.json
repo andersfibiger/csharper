@@ -1,6 +1,10 @@
 {
   "name": "csharper",
   "displayName": "csharper mocking",
+  "publisher": "AndersFibi",
+  "author": {
+    "name": "Anders Fibiger"
+  },
   "description": "Helps mocking dependencies for a class",
   "version": "0.0.1",
   "repository": {
