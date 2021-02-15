@@ -9,14 +9,36 @@ export const getConstructorDependencies = async (uri: vscode.Uri, constructorNam
   const startOfConstructor = fileContent.substring(constructorStartPosition + constructorName.length)
   const constructorEndPosition = startOfConstructor.indexOf(')');
 
-  const constructorParameters = startOfConstructor.substr(0, constructorEndPosition);
+  let constructorParameters = startOfConstructor.substr(0, constructorEndPosition);
+  constructorParameters = handleMultiGenerics(constructorParameters, ',');
 
   const dependencies = constructorParameters
     .split(',')
-    .map(p => p.trim().split(' ')[0]);
+    .map(p => {
+      const param = p.trim().split(' ')[0];
+      return handleMultiGenerics(param, '-');
+    });
 
   return dependencies;
 }
+
+const handleMultiGenerics = (parameters: string, searchCharacter: searchCharacter) => {
+  let expression;
+  let replaceValue;
+  if (searchCharacter == ',') {
+    expression = `${searchCharacter} (?=[^\\<]*>)`;
+    replaceValue = '-';
+  }
+  else {
+    expression = `${searchCharacter}(?=[^\\<]*>)`;
+    replaceValue = ', ';
+  }
+
+  const regex = new RegExp(expression, 'g');
+  return parameters.replace(regex, replaceValue);
+}
+
+type searchCharacter = ',' | '-';
 
 export const handleParametersNames = (parameters: string) => parameters.replace(/<(.*?)>/g, '');
 
@@ -33,7 +55,7 @@ export const getUnitUnderTest = (document: vscode.TextDocument, range: vscode.Ra
   let uut = line.text.split(' ').splice(-2);
   let type = uut[0];
 
-  if (type.startsWith('I'))
+  if (type.startsWith('I') && type.charAt(1) === type.charAt(1).toLowerCase())
     type = type.substr(1, type.length);
 
   return {
