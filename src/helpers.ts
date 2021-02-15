@@ -18,6 +18,8 @@ export const getConstructorDependencies = async (uri: vscode.Uri, constructorNam
   return dependencies;
 }
 
+export const handleParametersNames = (parameters: string) => parameters.replace(/<(.*?)>/g, '');
+
 export const getUnitUnderTest = (document: vscode.TextDocument, range: vscode.Range | vscode.Selection): UnitUnderTest | undefined => {
   if (document.fileName.indexOf('Test') === -1) {
     return;

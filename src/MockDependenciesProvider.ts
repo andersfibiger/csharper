@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getConstructorDependencies, getUnitUnderTest, getCurrentFileConstructor, getFileUriFromType, getIndentation } from './helpers';
+import { getConstructorDependencies, getUnitUnderTest, getCurrentFileConstructor, getFileUriFromType, getIndentation, handleParametersNames } from './helpers';
 import { UnitUnderTest } from './models/UnitUnderTest';
 
 export class MockDependenciesProvider implements vscode.CodeActionProvider {
@@ -44,7 +44,10 @@ export class MockDependenciesProvider implements vscode.CodeActionProvider {
 
   private getMock = (dependency: string) => `private readonly Mock<${dependency}> ${this.getMockName(dependency)};\n`;
 
-  private getMockName = (dependency: string) => `_mock${dependency.substr(1, dependency.length)}`;
+  private getMockName = (dependency: string) => {
+    const name = handleParametersNames(dependency);
+    return `_mock${name.substr(1, name.length)}`;
+  } 
 
   private async initializeMocks(dependencies: string[], uut: UnitUnderTest, document: vscode.TextDocument, startLine: number, edit: vscode.WorkspaceEdit) {
     const constructorName = getCurrentFileConstructor(document);
