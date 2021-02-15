@@ -1,8 +1,12 @@
 {
   "name": "csharper",
-  "displayName": "csharper",
+  "displayName": "csharper mocking",
   "description": "Helps mocking dependencies for a class",
   "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/andersfibiger/csharper"
+  },
+  "icon": "csharp-icon.png",
   "engines": {
     "vscode": "^1.53.0"
   },
