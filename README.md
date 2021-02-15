@@ -2,7 +2,7 @@
 
 This is a Work in progress.
 
-Extension for mocking out constructor dependencies easily by only specifying the unit under test. Currently only works with Moq as the mocking tool.
+Extension for mocking out constructor dependencies easily by only specifying the unit under test. Currently only works with Moq as the mocking tool and only C#.
 
 ## Features
 
@@ -21,11 +21,17 @@ This extension contributes the following settings:
 
 ## Known Issues
 
-* Omnisharp doesn't recognize the inserted mockings until it's been restarted.
+* Omnisharp doesn't recognize the inserted mockings until it's been restarted or vscode reloaded.
 * The inserted mockings can be below the test class scope if there is not sufficient space before
 * Using statements for the inserted dependencies are not inserted
 
 ## Release Notes
+
+
+### 0.0.2
+
+* Fixed naming of dependencies with generics
+* Fixed issue with dependencies with multiple generics being parsed wrong
 
 ### 0.0.1
 
