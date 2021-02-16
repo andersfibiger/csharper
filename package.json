@@ -45,18 +45,6 @@
           "*Tests"
         ]
       }
-    ],
-    "configuration": [
-      {
-        "title": "csharper configuration",
-        "properties": {
-          "csharper.restartOmnisharpAfterMocking": {
-            "type": "boolean",
-            "default": true,
-            "description": "if true omnisharp will restart after mocking"
-          }
-        }
-      }
     ]
   },
   "scripts": {

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { getConstructorDependencies, getUnitUnderTest, getCurrentFileConstructor, getFileUriFromType, getIndentation, handleParametersNames } from './helpers';
-import { UnitUnderTest } from './models/UnitUnderTest';
+import { UnitUnderTest } from './models/types';
 
 export class MockDependenciesProvider implements vscode.CodeActionProvider {
 
@@ -26,10 +26,6 @@ export class MockDependenciesProvider implements vscode.CodeActionProvider {
 
     await this.mockDependencies(dependencies, document, range, codeAction.edit);
     await this.initializeMocks(dependencies, uut, document, range.start.line + dependencies.length + 1, codeAction.edit);
-
-    if (vscode.workspace.getConfiguration().get('csharper.restartOmnisharpAfterMocking', true)) {
-      await vscode.commands.executeCommand('o.restart');
-    }
 
     return [
       codeAction

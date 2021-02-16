@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { UnitUnderTest } from './models/UnitUnderTest';
+import { Searcher, UnitUnderTest, SearchCharacter } from './models/types';
 
 export const getConstructorDependencies = async (uri: vscode.Uri, constructorName: string): Promise<string[]> => {
   const fileContent = (await vscode.workspace.openTextDocument(uri)).getText()
@@ -9,38 +9,66 @@ export const getConstructorDependencies = async (uri: vscode.Uri, constructorNam
   const startOfConstructor = fileContent.substring(constructorStartPosition + constructorName.length)
   const constructorEndPosition = startOfConstructor.indexOf(')');
 
-  let constructorParameters = startOfConstructor.substr(0, constructorEndPosition);
-  constructorParameters = handleMultiGenerics(constructorParameters, ',');
+  let constructorParameters = startOfConstructor.substr(0, constructorEndPosition).trim();
+  constructorParameters = replaceCharacter(constructorParameters, ',');
 
   const dependencies = constructorParameters
-    .split(',')
+    .split('-')
     .map(p => {
-      const param = p.trim().split(' ')[0];
-      return handleMultiGenerics(param, '-');
+      const depedency = getDependencyType(p);
+      return replaceCharacter(depedency, '-');
     });
 
   return dependencies;
 }
 
-const handleMultiGenerics = (parameters: string, searchCharacter: searchCharacter) => {
-  let expression;
-  let replaceValue;
-  if (searchCharacter == ',') {
-    expression = `${searchCharacter} (?=[^\\<]*>)`;
-    replaceValue = '-';
-  }
-  else {
-    expression = `${searchCharacter}(?=[^\\<]*>)`;
-    replaceValue = ', ';
-  }
-
-  const regex = new RegExp(expression, 'g');
-  return parameters.replace(regex, replaceValue);
+const getDependencyType = (param: string) => {
+  param = param.trim();
+  const indexOfLastSpace = param.lastIndexOf(' ');
+  return param.substring(0, indexOfLastSpace);
 }
 
-type searchCharacter = ',' | '-';
+const replaceCharacter = (parameters: string, searchCharacter: SearchCharacter) => {
+  var newParameters = '';
+  var searcher = {
+    count: 0,
+    searchCharacter
+  };
 
-export const handleParametersNames = (parameters: string) => parameters.replace(/<(.*?)>/g, '');
+  for (let i = 0; i < parameters.length; ++i) {
+    const char = parameters.charAt(i);
+    newParameters = handleChar(char, newParameters, searcher);
+  }
+
+  return newParameters;
+}
+
+const handleChar = (char: string, newParameters: string, searcher: Searcher): string => {
+  if (char === '<') {
+    ++searcher.count;
+    return newParameters + char;
+  }
+
+  if (char === '>') {
+    --searcher.count;
+    return newParameters + char;
+  }
+
+  if (char === searcher.searchCharacter && searcher.count === 0) {
+    return newParameters + ((searcher.searchCharacter === ',') ? '-' : ',');
+  }
+
+  return newParameters + char;
+}
+
+export const handleParametersNames = (parameters: string) => {
+  const index = parameters.indexOf('<');
+  if (index !== -1) {
+    return parameters.substring(0, index)
+  }
+
+  return parameters;
+}
 
 export const getUnitUnderTest = (document: vscode.TextDocument, range: vscode.Range | vscode.Selection): UnitUnderTest | undefined => {
   if (document.fileName.indexOf('Test') === -1) {
@@ -55,7 +83,7 @@ export const getUnitUnderTest = (document: vscode.TextDocument, range: vscode.Ra
   let uut = line.text.split(' ').splice(-2);
   let type = uut[0];
 
-  if (type.startsWith('I') && type.charAt(1) === type.charAt(1).toLowerCase())
+  if (type.startsWith('I') && type.charAt(1) === type.charAt(1).toUpperCase())
     type = type.substr(1, type.length);
 
   return {

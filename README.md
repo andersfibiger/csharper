@@ -17,7 +17,7 @@ Mocking out dependencies for a constructor using quick fix
 
 This extension contributes the following settings:
 
-* `csharper.restartOmnisharpAfterMocking`: restart omnisharp server after mocking
+* No Settings for now
 
 ## Known Issues
 
@@ -27,6 +27,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+
+### 0.0.3
+
+* Proper handling of dependencies with multiple generics
 
 ### 0.0.2
 
