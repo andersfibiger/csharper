@@ -4,6 +4,8 @@ This is a Work in progress.
 
 Extension for mocking out constructor dependencies easily by only specifying the unit under test. Currently only works with Moq as the mocking tool and only C#.
 
+Once declared your unit under test in a `*Tests` file, a quick fix will become availabe for mocking out the constructor dependencies. 
+
 ## Features
 
 Mocking out dependencies for a constructor using quick fix
