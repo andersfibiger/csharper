@@ -15,11 +15,11 @@
     "vscode": "^1.53.0"
   },
   "keywords": [
-    "c#",
-    "mock",
-    "csharper",
-    "mock dependencies",
-    "mocking"
+    "c# test",
+    "dotnet test",
+    "dotnet mocking",
+    "c# mocking",
+    "c# mock tool"
   ],
   "categories": [
     "Other"
