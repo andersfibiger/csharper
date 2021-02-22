@@ -142,7 +142,7 @@ export const getUsingStatements = async (uri: vscode.Uri) => {
   text = text.substring(0, index).trim();
 
   const usingStatements = text.split('\n')
-  usingStatements.forEach(x => x.trimEnd());
+  usingStatements.forEach((statement, index, statements) => statements[index] = statement.trimEnd());
 
   return usingStatements;
 }

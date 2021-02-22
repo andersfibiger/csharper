@@ -3,6 +3,7 @@ import { IDependencyReader } from './dependencyReader';
 import { getConstructorDependencies, getUnitUnderTest, getCurrentFileConstructor, getFileUriFromType, getIndentation, handleParametersNames, getUsingStatements } from './helpers';
 import { ICharReplacer } from './helpers/charReplacer';
 import { IDependencyTypeHelper } from './helpers/dependencyTypeHelper';
+import { addConstructor, getMockMember, getMockName, initializeCtor, initializeMock } from './helpers/textFormatting';
 import { UnitUnderTest } from './models/types';
 
 export class MockDependenciesProvider implements vscode.CodeActionProvider {
@@ -32,8 +33,8 @@ export class MockDependenciesProvider implements vscode.CodeActionProvider {
     const usingStatements = await getUsingStatements(fileUri);
 
     await this.mockDependencies(dependencies, document, range, codeAction.edit);
-    await this.initializeMocks(dependencies, uut, document, range, codeAction.edit);
-    await this.insertStatements(usingStatements, document, codeAction.edit);
+    await this.initializeMembers(dependencies, uut, document, range, codeAction.edit);
+    await this.insertUsingStatements(usingStatements, document, codeAction.edit);
 
     return [
       codeAction
@@ -42,38 +43,25 @@ export class MockDependenciesProvider implements vscode.CodeActionProvider {
 
   private async mockDependencies(dependencies: string[], document: vscode.TextDocument, range: vscode.Range, edit: vscode.WorkspaceEdit) {
     dependencies.forEach(dependency => {
-      edit.insert(document.uri, range.start.translate(1), `${getIndentation()}${this.getMock(dependency)}`);
+      edit.insert(document.uri, range.start.translate(1), `${getIndentation()}${getMockMember(dependency)}`);
     });
   }
 
-  private getMock = (dependency: string) => `private readonly Mock<${dependency}> ${this.getMockName(dependency)};\n`;
-
-  private getMockName = (dependency: string) => {
-    const name = handleParametersNames(dependency);
-    return `_mock${name.substr(1, name.length)}`;
-  }
-
-  private async initializeMocks(dependencies: string[], uut: UnitUnderTest, document: vscode.TextDocument, range: vscode.Range, edit: vscode.WorkspaceEdit) {
+  private async initializeMembers(dependencies: string[], uut: UnitUnderTest, document: vscode.TextDocument, range: vscode.Range, edit: vscode.WorkspaceEdit) {
     const constructorName = getCurrentFileConstructor(document);
     var insertRange = range.start.translate(1);
-    edit.insert(document.uri, insertRange, this.addConstructor(constructorName))
+    edit.insert(document.uri, insertRange, addConstructor(constructorName))
 
     dependencies.forEach(dependency => {
-      edit.insert(document.uri, insertRange, `${getIndentation()}  ${this.getMockName(dependency)} = new Mock<${dependency}>();\n`);
+      edit.insert(document.uri, insertRange, initializeMock(dependency));
     })
 
-    edit.insert(document.uri, insertRange, this.initializeCtor(uut, dependencies.map(this.getMockName)));
+    edit.insert(document.uri, insertRange, initializeCtor(uut, dependencies.map(getMockName)));
 
     edit.insert(document.uri, insertRange, `\n${getIndentation()}}`);
   }
 
-  private addConstructor = (constructorName: string) => `\n${getIndentation()}public ${constructorName}()\n${getIndentation()}{\n`;
-
-  private initializeCtor = (uut: UnitUnderTest, mocks: string[]): string => {
-    return `${getIndentation()}  ${uut.name} = new ${uut.type}(${mocks.map(m => `${m}.Object`)});`;
-  }
-
-  private insertStatements = async (statements: string[], document: vscode.TextDocument, edit: vscode.WorkspaceEdit) => {
+  private insertUsingStatements = async (statements: string[], document: vscode.TextDocument, edit: vscode.WorkspaceEdit) => {
     const existingUsingStatements = await getUsingStatements(document.uri);
     const insertAtLine = existingUsingStatements.length;
 
