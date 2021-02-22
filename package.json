@@ -6,7 +6,7 @@
     "name": "Anders Fibiger"
   },
   "description": "Helps mocking dependencies for a class",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "repository": {
     "url": "https://github.com/andersfibiger/csharper"
   },
