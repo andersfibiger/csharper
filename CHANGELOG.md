@@ -1,5 +1,11 @@
 # Change Log
 
+## 02-22-2021
+
+- Using statements from unit under test are now inserted if not present
+- Moq and Xunit namespaces are also inserted if not already added to the test file
+- Whitespace / multiline problem try fix
+
 ## 02-16-2021
 
 - Fixed wrong handling of dependencies with multiple generics

@@ -10,10 +10,11 @@ Once declared your unit under test in a `*Tests` file, a quick fix will become a
 
 Mocking out dependencies for a constructor using quick fix
 
-![Mock depedencies](images/mock-dependencies.gif)
+![Mock depedencies](images/mock-dependencies-with-using-statements.gif)
 ## Requirements
 
 * Moq (nuget package)
+* Xunit (nuget package)
 
 ## Extension Settings
 
@@ -25,10 +26,13 @@ This extension contributes the following settings:
 
 * Omnisharp doesn't recognize the inserted mockings until it's been restarted or vscode reloaded.
 * The inserted mockings can be below the test class scope if there is not sufficient space before
-* Using statements for the inserted dependencies are not inserted
 
 ## Release Notes
 
+### 0.1.0
+
+* Inserting all using statements which are not present in test file
+* Try fixing too much white3space
 
 ### 0.0.3
 

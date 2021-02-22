@@ -134,3 +134,15 @@ const formatFileNames = (fileUri: vscode.Uri): string => {
   const startIndexOfFileNames = fileUri.path.lastIndexOf(vscode.workspace.workspaceFolders![0].name);
   return fileUri.path.substr(startIndexOfFileNames);
 }
+
+export const getUsingStatements = async (uri: vscode.Uri) => {
+  var text = (await vscode.workspace.openTextDocument(uri)).getText();
+
+  const index = text.indexOf('namespace');
+  text = text.substring(0, index).trim();
+
+  const usingStatements = text.split('\n')
+  usingStatements.forEach(x => x.trimEnd());
+
+  return usingStatements;
+}
