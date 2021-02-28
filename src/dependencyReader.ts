@@ -1,41 +1,29 @@
 import * as vscode from 'vscode';
-import { ICharReplacer } from './helpers/charReplacer';
-import { IDependencyTypeHelper } from './helpers/dependencyTypeHelper';
+import { replaceCharacter } from './helpers/charReplacer';
+import { getDependencyType } from './helpers/dependencyTypeHelper';
 
-export interface IDependencyReader {
-  getConstructorDependencies(constructorName: string, fileUri: vscode.Uri): Promise<string[]>;
+export const getConstructorDependencies = async (constructorName: string, fileUri: vscode.Uri): Promise<string[]> => {
+  let constructorParameters = await getConstructorParameters(constructorName, fileUri);
+  constructorParameters = replaceCharacter(constructorParameters, ',');
+
+  return getDependencyTypes(constructorParameters);
 }
 
-export class DependencyReader {
-  private _fileContent: string | undefined;
+const getConstructorParameters = async (constructorName: string, fileUri: vscode.Uri): Promise<string> => {
+  const fileContent = (await vscode.workspace.openTextDocument(fileUri)).getText();
 
-  public constructor(
-    private charReplacer: ICharReplacer,
-    private dependencyTypeHelper: IDependencyTypeHelper) { }
+  const constructorStartPosition = fileContent.indexOf(`${constructorName}(`) + 1;
+  const startOfConstructor = fileContent.substring(constructorStartPosition + constructorName.length)
+  const constructorEndPosition = startOfConstructor.indexOf(')');
 
-  public async getConstructorDependencies(constructorName: string, fileUri: vscode.Uri): Promise<string[]> {
-    let constructorParameters = await this._getConstructorParameters(constructorName, fileUri);
-    constructorParameters = this.charReplacer.replaceCharacter(constructorParameters, ',');
+  return startOfConstructor.substr(0, constructorEndPosition).trim();
+}
 
-    return this._getDependencyTypes(constructorParameters);
-  }
-
-  private async _getConstructorParameters(constructorName: string, fileUri: vscode.Uri): Promise<string> {
-    this._fileContent = (await vscode.workspace.openTextDocument(fileUri)).getText();
-
-    const constructorStartPosition = this._fileContent.indexOf(`${constructorName}(`) + 1;
-    const startOfConstructor = this._fileContent.substring(constructorStartPosition + constructorName.length)
-    const constructorEndPosition = startOfConstructor.indexOf(')');
-
-    return startOfConstructor.substr(0, constructorEndPosition).trim();
-  }
-
-  private _getDependencyTypes(parameters: string): string[] {
-    return parameters
-      .split('-')
-      .map(p => {
-        const depedency = this.dependencyTypeHelper.get(p);
-        return this.charReplacer.replaceCharacter(depedency, '-');
-      });
-  }
+const getDependencyTypes = (parameters: string): string[] => {
+  return parameters
+    .split('-')
+    .map(p => {
+      const depedency = getDependencyType(p);
+      return replaceCharacter(depedency, '-');
+    });
 }

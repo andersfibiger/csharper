@@ -1,16 +1,10 @@
 import * as vscode from 'vscode';
-import { IDependencyReader } from './dependencyReader';
-import { getConstructorDependencies, getUnitUnderTest, getCurrentFileConstructor, getFileUriFromType, getIndentation, handleParametersNames, getUsingStatements } from './helpers';
-import { ICharReplacer } from './helpers/charReplacer';
-import { IDependencyTypeHelper } from './helpers/dependencyTypeHelper';
+import { getConstructorDependencies } from './dependencyReader';
+import { getUnitUnderTest, getCurrentFileConstructor, getFileUriFromType, getIndentation, getUsingStatements } from './helpers';
 import { addConstructor, getMockMember, getMockName, initializeCtor, initializeMock } from './helpers/textFormatting';
 import { UnitUnderTest } from './models/types';
 
 export class MockDependenciesProvider implements vscode.CodeActionProvider {
-  constructor(
-    private dependencyReader: IDependencyReader) {
-  }
-
   public static readonly providedCodeActionKinds = [
     vscode.CodeActionKind.QuickFix
   ];
@@ -28,8 +22,8 @@ export class MockDependenciesProvider implements vscode.CodeActionProvider {
     if (!fileUri) {
       return [];
     }
-
-    const dependencies = await this.dependencyReader.getConstructorDependencies(uut.type, fileUri);
+    
+    const dependencies = await getConstructorDependencies(uut.type, fileUri);
     const usingStatements = await getUsingStatements(fileUri);
 
     await this.mockDependencies(dependencies, document, range, codeAction.edit);
