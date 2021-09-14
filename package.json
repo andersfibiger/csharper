@@ -19,16 +19,25 @@
     "dotnet test",
     "dotnet mocking",
     "c# mocking",
-    "c# mock tool"
+    "c# mock tool",
+    "C# snippets",
+    "private readonly memeber"
   ],
   "categories": [
-    "Other"
+    "Other",
+    "Snippets"
   ],
   "activationEvents": [
     "onLanguage:csharp"
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "snippets": [
+      {
+        "language": "csharp",
+        "path": "./snippets/csharp.json"
+      }
+    ],
     "commands": [],
     "languages": [
       {
