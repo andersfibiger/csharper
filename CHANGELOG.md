@@ -1,5 +1,9 @@
 # Change Log
 
+## 09-14-2021
+
+- Add snippet for private readonly members
+
 ## 02-22-2021
 
 - Using statements from unit under test are now inserted if not present
