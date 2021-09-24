@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { getConstructorDependencies } from './dependencyReader';
-import { getUnitUnderTest, getCurrentFileConstructor, getFileUriFromType, getIndentation, getUsingStatements } from './helpers';
-import { addConstructor, getMockMember, getMockName, initializeCtor, initializeMock } from './helpers/textFormatting';
-import { UnitUnderTest } from './models/types';
+import { getConstructorDependencies } from '../dependencyReader';
+import { getUnitUnderTest, getCurrentFileConstructor, getFileUriFromType, getIndentation, getUsingStatements } from '../helpers';
+import { addConstructor, getMockMember, getMockName, initializeCtor, initializeMock } from '../helpers/textFormatting';
+import { UnitUnderTest } from '../models/types';
 
 export class MockDependenciesProvider implements vscode.CodeActionProvider {
   public static readonly providedCodeActionKinds = [
