@@ -1,5 +1,9 @@
 # Change Log
 
+## 09-24-2021
+
+- Add IsAny completions items for writing unit tests.
+
 ## 09-14-2021
 
 - Add snippet for private readonly members

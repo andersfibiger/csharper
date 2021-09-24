@@ -14,6 +14,10 @@ Mocking out dependencies for a constructor using quick fix
 
 Also includes a snippet for initializaing private readonly members
 
+Set `It.IsAny` as parameters in methods. Works with default primitive types and also generic type T which should be replaced by yourself.
+
+![Any parameters](images/mock-parameters.gif)
+
 ## Requirements
 
 * Moq (nuget package)
@@ -28,9 +32,13 @@ This extension contributes the following settings:
 ## Known Issues
 
 * Omnisharp doesn't recognize the inserted mockings until it's been restarted or vscode reloaded.
-* The inserted mockings can be below the test class scope if there is not sufficient space before
+* The inserted mockings can get the same name if generic interfaces are used in same class.
 
 ## Release Notes
+
+### 0.2.0
+
+* Add IsAny completions items for writing unit tests.
 
 ### 0.1.0
 
