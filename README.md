@@ -10,7 +10,7 @@ Once declared your unit under test in a `*Tests` file, a quick fix will become a
 
 Mocking out dependencies for a constructor using quick fix
 
-![Mock depedencies](images/mock-dependencies-with-using-statements.gif)
+![Mock depedencies](images/mock-dependencies-v2.gif)
 
 Also includes a snippet for initializaing private readonly members
 
